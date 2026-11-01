@@ -2,3 +2,5 @@
 __pycache__/
 data/detection_results/*
 !data/detection_results/.gitkeep
+data/ground_truth_results/*
+!data/ground_truth_results/.gitkeep
