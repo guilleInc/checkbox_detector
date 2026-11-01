@@ -1,0 +1,4 @@
+.venv/
+__pycache__/
+data/detection_results/*
+!data/detection_results/.gitkeep

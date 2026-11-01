@@ -1,0 +1,9 @@
+[project]
+name = "checkbox-detector"
+version = "0.1.0"
+description = "Detect checkboxes in images and paint them."
+requires-python = ">=3.10"
+dependencies = [
+    "pillow>=10.0",
+    "pydantic>=2.0",
+]
