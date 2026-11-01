@@ -1,8 +1,10 @@
 from detectors.base_detector import CheckboxesDetector
 from detectors.dummy_v1_detector import DummyV1CheckboxesDetector
+from detectors.opencv_v1_detector import OpenCVV1CheckboxesDetector
 
 DETECTORS = {
     "dummy_v1": DummyV1CheckboxesDetector,
+    "opencv_v1": OpenCVV1CheckboxesDetector,
 }
 
 
