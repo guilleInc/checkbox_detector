@@ -65,6 +65,23 @@ image_1.png -> data/detection_results/dummy_v1/image_1_painted.png
 
 The output directory is cleared and recreated each time the detector runs.
 
+## Evaluating a detector
+
+Run a detector against every image in `data/image_dataset/` with:
+
+```bash
+uv run python run_detection_test.py -d dummy_v1
+```
+
+The evaluation report is saved to
+`data/detection_results/<detector>_evaluation.json`. It includes per-image
+matches, extra boxes, missed boxes, checked-state accuracy, and a summary.
+The simple score is between 0 and 1:
+
+```text
+correctly matched states / max(expected boxes, detected boxes)
+```
+
 ## Project structure
 
 ```text
@@ -79,7 +96,9 @@ The output directory is cleared and recreated each time the detector runs.
 │   ├── image_dataset/        # Input images
 │   └── detection_results/    # Generated output images
 ├── models.py                 # Checkbox data model
-└── run_detection.py          # Command-line entry point
+├── run_detection.py          # Detector painting entry point
+├── detection_test.py         # Matching and evaluation metrics
+└── run_detection_test.py     # Evaluation command-line entry point
 ```
 
 ## Adding a detector
