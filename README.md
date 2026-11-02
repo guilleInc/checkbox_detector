@@ -64,10 +64,13 @@ to untrusted clients, also configure a request-body limit at the ingress.
 ## Web interface
 
 With the server running, open `http://127.0.0.1:8000/` to use the frontend: select
-or drag and drop a PNG, JPG or JPEG image, run detection, and inspect the
-results. Checked boxes are outlined in green, unchecked boxes in red, and a
+or drag and drop one or more PNG, JPG or JPEG images, run detection on the one
+being shown, and inspect the results. Loaded images appear as thumbnails below
+the viewer with their name and detection status; click one to show it or its ✕
+to remove it. Checked boxes are outlined in green, unchecked boxes in red, and a
 summary shows the total, checked and unchecked counts. The zoom controls keep
-the image and its overlay aligned. The frontend is plain HTML, CSS and
+the image and its overlay aligned, and the image can be panned by clicking and
+dragging. The frontend is plain HTML, CSS and
 JavaScript in `frontend/`; it is served by the API itself, so no build step or
 CORS configuration is needed, and all drawing happens in the browser.
 

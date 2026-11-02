@@ -3,46 +3,75 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Checkbox Detector</title>
+  <title>Checkboxes Detector</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main>
-    <h1>Checkbox Detector</h1>
-
-    <label id="drop-zone" class="drop-zone" for="file-input" tabindex="0">
-      <span>Drag and drop an image here, or click to select one</span>
-      <small>PNG, JPG or JPEG, up to 10 MiB</small>
-      <input id="file-input" type="file" accept="image/png,image/jpeg,.png,.jpg,.jpeg" hidden>
-    </label>
-
-    <div class="actions">
-      <button id="detect-button" type="button" disabled>Detect checkboxes</button>
-      <span id="status" role="status" aria-live="polite"></span>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <img src="logo.svg" alt="HomeVision" class="logo">
     </div>
-    <p id="error" class="error" role="alert" hidden></p>
+  </header>
+  <main>
+    <div class="intro">
+      <h1>Checkboxes Detector</h1>
+      <p>Detect checked and unchecked checkboxes in images, scanned documents, forms and more.</p>
+    </div>
 
-    <section id="summary" class="summary" hidden aria-label="Detection summary">
-      <div><strong id="total-count">0</strong> total</div>
-      <div class="checked"><strong id="checked-count">0</strong> checked</div>
-      <div class="unchecked"><strong id="unchecked-count">0</strong> unchecked</div>
+    <!-- 1. Uploader -->
+    <section id="uploader" class="area">
+      <h2>Upload Images</h2>
+      <div class="panel">
+      <label id="drop-zone" class="drop-zone" for="file-input" tabindex="0">
+        <span>Drag and drop images here, or click to select them</span>
+        <small>PNG, JPG or JPEG, up to 10 MiB</small>
+      </label>
+      <input id="file-input" type="file" accept="image/png,image/jpeg,.png,.jpg,.jpeg" multiple hidden>
+      <p id="upload-error" class="error" role="alert" hidden></p>
+      </div>
     </section>
 
-    <section id="viewer" hidden aria-label="Image preview">
-      <div class="zoom-controls">
-        <button id="zoom-out" type="button" aria-label="Zoom out">&minus;</button>
-        <span id="zoom-level">100%</span>
-        <button id="zoom-in" type="button" aria-label="Zoom in">+</button>
-        <button id="zoom-fit" type="button">Fit</button>
+    <!-- 2. Loaded images -->
+    <section id="gallery" class="area" hidden>
+      <h2>Loaded Images <span id="gallery-count" class="count">0</span></h2>
+      <div class="panel">
+        <ul id="thumbs" class="thumbs"></ul>
       </div>
-      <div id="viewport" class="viewport">
-        <div id="stage" class="stage">
-          <img id="preview" alt="Selected image">
-          <canvas id="overlay"></canvas>
+    </section>
+
+    <!-- 3. Viewer -->
+    <section id="viewer" class="area" hidden>
+      <h2>Image Viewer<span id="viewer-title"></span></h2>
+      <div class="panel">
+        <div class="detect-row">
+          <button id="detect-button" type="button">Detect checkboxes</button>
+          <div id="summary" class="summary" hidden>
+            <div><strong id="total-count">0</strong> total</div>
+            <div class="checked"><strong id="checked-count">0</strong> checked</div>
+            <div class="unchecked"><strong id="unchecked-count">0</strong> unchecked</div>
+          </div>
+        </div>
+        <p id="detect-error" class="error" role="alert" hidden></p>
+
+        <div class="zoom-controls">
+          <button id="zoom-out" type="button" aria-label="Zoom out">&minus;</button>
+          <span id="zoom-level">100%</span>
+          <button id="zoom-in" type="button" aria-label="Zoom in">+</button>
+          <button id="zoom-fit" type="button">Fit</button>
+        </div>
+
+        <div id="viewport" class="viewport">
+          <div id="stage" class="stage">
+            <img id="preview" alt="Selected image">
+            <canvas id="overlay"></canvas>
+          </div>
         </div>
       </div>
     </section>
   </main>
-  <script src="app.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>

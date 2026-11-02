@@ -167,8 +167,8 @@ class DetectionAPITest(unittest.TestCase):
         index = self.client.get("/")
         self.assertEqual(index.status_code, 200)
         self.assertIn("text/html", index.headers["content-type"])
-        self.assertIn("Checkbox Detector", index.text)
-        for path in ("/app.js", "/styles.css"):
+        self.assertIn("Checkboxes Detector", index.text)
+        for path in ("/logo.svg", "/app.js", "/uploader.js", "/gallery.js", "/viewer.js", "/status.js", "/styles.css"):
             with self.subTest(path=path):
                 self.assertEqual(self.client.get(path).status_code, 200)
         self.assertEqual(self.client.get("/missing.js").status_code, 404)
