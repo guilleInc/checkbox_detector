@@ -167,7 +167,7 @@ class DetectionAPITest(unittest.TestCase):
         index = self.client.get("/")
         self.assertEqual(index.status_code, 200)
         self.assertIn("text/html", index.headers["content-type"])
-        self.assertIn("Checkbox Detector", index.text)
+        self.assertIn("HomeVision Checkboxes Detector", index.text)
         for path in ("/app.js", "/styles.css"):
             with self.subTest(path=path):
                 self.assertEqual(self.client.get(path).status_code, 200)

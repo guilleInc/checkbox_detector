@@ -3,37 +3,54 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Checkbox Detector</title>
+  <meta name="description" content="Upload an image of a form and detect which checkboxes are checked.">
+  <title>HomeVision Checkboxes Detector</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <main>
-    <h1>Checkbox Detector</h1>
+    <header>
+      <h1>HomeVision Checkboxes Detector</h1>
+      <p>Upload an image of a form and instantly see which checkboxes are checked and which are not.</p>
+    </header>
+
+    <input id="file-input" type="file" accept="image/png,image/jpeg,.png,.jpg,.jpeg" hidden>
 
     <label id="drop-zone" class="drop-zone" for="file-input" tabindex="0">
       <span>Drag and drop an image here, or click to select one</span>
       <small>PNG, JPG or JPEG, up to 10 MiB</small>
-      <input id="file-input" type="file" accept="image/png,image/jpeg,.png,.jpg,.jpeg" hidden>
     </label>
 
-    <div class="actions">
-      <button id="detect-button" type="button" disabled>Detect checkboxes</button>
-      <span id="status" role="status" aria-live="polite"></span>
-    </div>
+    <section id="file-bar" class="file-bar" hidden aria-label="Selected image">
+      <div class="file-info">
+        <strong id="file-name"></strong>
+        <small id="file-size"></small>
+      </div>
+      <div class="file-actions">
+        <button id="detect-button" type="button" class="primary">Detect checkboxes</button>
+        <button id="change-button" type="button" class="secondary">Change</button>
+        <button id="remove-button" type="button" class="secondary" aria-label="Remove image">&#10005; Remove</button>
+      </div>
+    </section>
+    <div id="status" class="status" role="status" aria-live="polite"></div>
     <p id="error" class="error" role="alert" hidden></p>
 
     <section id="summary" class="summary" hidden aria-label="Detection summary">
-      <div><strong id="total-count">0</strong> total</div>
-      <div class="checked"><strong id="checked-count">0</strong> checked</div>
-      <div class="unchecked"><strong id="unchecked-count">0</strong> unchecked</div>
+      <div class="card"><strong id="total-count">0</strong><span>Total</span></div>
+      <div class="card checked"><strong id="checked-count">0</strong><span><i class="dot"></i>Checked</span></div>
+      <div class="card unchecked"><strong id="unchecked-count">0</strong><span><i class="dot"></i>Unchecked</span></div>
     </section>
+
+    <p id="empty-state" class="empty-state">Your image and the detection results will appear here.</p>
 
     <section id="viewer" hidden aria-label="Image preview">
       <div class="zoom-controls">
-        <button id="zoom-out" type="button" aria-label="Zoom out">&minus;</button>
+        <button id="zoom-out" type="button" class="secondary" aria-label="Zoom out">&minus;</button>
         <span id="zoom-level">100%</span>
-        <button id="zoom-in" type="button" aria-label="Zoom in">+</button>
-        <button id="zoom-fit" type="button">Fit</button>
+        <button id="zoom-in" type="button" class="secondary" aria-label="Zoom in">+</button>
+        <button id="zoom-fit" type="button" class="secondary">Fit</button>
+        <button id="zoom-actual" type="button" class="secondary">100%</button>
+        <small class="hint">Ctrl/&#8984; + scroll to zoom</small>
       </div>
       <div id="viewport" class="viewport">
         <div id="stage" class="stage">

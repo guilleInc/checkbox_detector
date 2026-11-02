@@ -10,10 +10,14 @@
   const $ = (id) => document.getElementById(id);
   const dropZone = $("drop-zone");
   const fileInput = $("file-input");
+  const fileBar = $("file-bar");
   const detectButton = $("detect-button");
+  const changeButton = $("change-button");
+  const removeButton = $("remove-button");
   const statusEl = $("status");
   const errorEl = $("error");
   const summaryEl = $("summary");
+  const emptyState = $("empty-state");
   const viewerEl = $("viewer");
   const viewport = $("viewport");
   const stage = $("stage");
@@ -34,9 +38,17 @@
 
   function setBusy(value, message = "") {
     busy = value;
-    detectButton.disabled = value || !selectedFile;
+    detectButton.disabled = value;
+    changeButton.disabled = value;
+    removeButton.disabled = value;
     statusEl.textContent = message;
     statusEl.classList.toggle("loading", value);
+  }
+
+  function formatSize(bytes) {
+    return bytes < 1024 * 1024
+      ? `${Math.max(1, Math.round(bytes / 1024))} KB`
+      : `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   }
 
   function isSupported(file) {
@@ -49,6 +61,25 @@
     boxes = [];
     summaryEl.hidden = true;
     overlay.getContext("2d").clearRect(0, 0, overlay.width, overlay.height);
+  }
+
+  function showImageControls(visible) {
+    dropZone.hidden = visible;
+    fileBar.hidden = !visible;
+    viewerEl.hidden = !visible;
+    emptyState.hidden = visible;
+  }
+
+  function removeFile() {
+    if (busy) return;
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+    objectUrl = null;
+    selectedFile = null;
+    preview.onload = preview.onerror = null;
+    preview.removeAttribute("src");
+    resetResults();
+    showError("");
+    showImageControls(false);
   }
 
   function selectFile(file) {
@@ -67,28 +98,34 @@
     objectUrl = URL.createObjectURL(file);
     selectedFile = file;
     resetResults();
+    $("file-name").textContent = file.name;
+    $("file-size").textContent = formatSize(file.size);
     preview.onload = () => {
       overlay.width = preview.naturalWidth;
       overlay.height = preview.naturalHeight;
-      viewerEl.hidden = false;
+      showImageControls(true);
       fitToWidth();
     };
     preview.onerror = () => {
-      selectedFile = null;
-      viewerEl.hidden = true;
-      detectButton.disabled = true;
+      removeFile();
       showError("The selected file could not be displayed as an image.");
     };
     preview.src = objectUrl;
-    detectButton.disabled = false;
   }
 
-  function applyZoom(value) {
+  function applyZoom(value, anchor) {
     if (!preview.naturalWidth) return;
+    const previous = zoom;
     zoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, value));
     stage.style.width = `${preview.naturalWidth * zoom}px`;
     stage.style.height = `${preview.naturalHeight * zoom}px`;
     zoomLevel.textContent = `${Math.round(zoom * 100)}%`;
+    if (anchor) {
+      // Keep the image point under the cursor fixed while zooming.
+      const ratio = zoom / previous;
+      viewport.scrollLeft = (viewport.scrollLeft + anchor.x) * ratio - anchor.x;
+      viewport.scrollTop = (viewport.scrollTop + anchor.y) * ratio - anchor.y;
+    }
   }
 
   function fitToWidth() {
@@ -147,6 +184,24 @@
     }
   }
 
+  function enableDrop(element) {
+    element.addEventListener("dragover", (event) => {
+      event.preventDefault();
+      element.classList.add("dragover");
+    });
+    element.addEventListener("dragleave", () => element.classList.remove("dragover"));
+    element.addEventListener("drop", (event) => {
+      event.preventDefault();
+      element.classList.remove("dragover");
+      const files = event.dataTransfer.files;
+      if (files.length > 1) {
+        showError("Please drop a single image.");
+        return;
+      }
+      selectFile(files[0]);
+    });
+  }
+
   fileInput.addEventListener("change", () => {
     selectFile(fileInput.files[0]);
     fileInput.value = "";
@@ -157,28 +212,25 @@
       fileInput.click();
     }
   });
-  dropZone.addEventListener("dragover", (event) => {
-    event.preventDefault();
-    dropZone.classList.add("dragover");
-  });
-  dropZone.addEventListener("dragleave", () => dropZone.classList.remove("dragover"));
-  dropZone.addEventListener("drop", (event) => {
-    event.preventDefault();
-    dropZone.classList.remove("dragover");
-    const files = event.dataTransfer.files;
-    if (files.length > 1) {
-      showError("Please drop a single image.");
-      return;
-    }
-    selectFile(files[0]);
-  });
+  enableDrop(dropZone);
+  enableDrop(fileBar);
   // Prevent the browser from navigating to a file dropped outside the drop zone.
   for (const type of ["dragover", "drop"]) {
     window.addEventListener(type, (event) => event.preventDefault());
   }
 
   detectButton.addEventListener("click", detect);
+  changeButton.addEventListener("click", () => fileInput.click());
+  removeButton.addEventListener("click", removeFile);
   $("zoom-in").addEventListener("click", () => applyZoom(zoom * ZOOM_STEP));
   $("zoom-out").addEventListener("click", () => applyZoom(zoom / ZOOM_STEP));
   $("zoom-fit").addEventListener("click", fitToWidth);
+  $("zoom-actual").addEventListener("click", () => applyZoom(1));
+  viewport.addEventListener("wheel", (event) => {
+    if (!event.ctrlKey && !event.metaKey) return;
+    event.preventDefault();
+    const rect = viewport.getBoundingClientRect();
+    const anchor = { x: event.clientX - rect.left, y: event.clientY - rect.top };
+    applyZoom(zoom * (event.deltaY < 0 ? ZOOM_STEP : 1 / ZOOM_STEP), anchor);
+  }, { passive: false });
 })();
