@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url("fonts/inter-latin.woff2") format("woff2");
+}
+
 :root {
   --brand: #4f46e5;
   --brand-dark: #4338ca;
@@ -7,6 +15,8 @@
   --muted: #5f6472;
   --muted-light: #a1a5b3;
   --border: #e3e5ec;
+  --checked: #1a7f37;
+  --unchecked: #cf222e;
 }
 
 * { box-sizing: border-box; }
@@ -97,8 +107,8 @@ button:not(:disabled):hover { background: var(--brand-dark); }
 
 .status { font-size: 0.8rem; color: var(--muted); }
 .status.detecting { color: var(--brand); }
-.status.done { color: #1a7f37; }
-.status.error { color: #cf222e; }
+.status.done { color: var(--checked); }
+.status.error { color: var(--unchecked); }
 .status.detecting::before {
   content: "";
   display: inline-block;
@@ -196,7 +206,7 @@ button:not(:disabled):hover { background: var(--brand-dark); }
   background: rgba(31, 35, 40, 0.7);
   border-radius: 50%;
 }
-.thumb .thumb-remove:not(:disabled):hover { background: #cf222e; }
+.thumb .thumb-remove:not(:disabled):hover { background: var(--unchecked); }
 
 /* 3. Viewer */
 #viewer-title { overflow-wrap: anywhere; }
@@ -235,8 +245,8 @@ button:not(:disabled):hover { background: var(--brand-dark); }
   gap: 16px;
 }
 .summary strong { font-size: 1.25rem; }
-.summary .checked { color: #1a7f37; }
-.summary .unchecked { color: #cf222e; }
+.summary .checked { color: var(--checked); }
+.summary .unchecked { color: var(--unchecked); }
 
 .viewport {
   height: 70vh;

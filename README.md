@@ -63,16 +63,23 @@ to untrusted clients, also configure a request-body limit at the ingress.
 
 ## Web interface
 
-With the server running, open `http://127.0.0.1:8000/` to use the frontend: select
-or drag and drop one or more PNG, JPG or JPEG images, run detection on the one
-being shown, and inspect the results. Loaded images appear as thumbnails below
-the viewer with their name and detection status; click one to show it or its ✕
-to remove it. Checked boxes are outlined in green, unchecked boxes in red, and a
-summary shows the total, checked and unchecked counts. The zoom controls keep
-the image and its overlay aligned, and the image can be panned by clicking and
-dragging. The frontend is plain HTML, CSS and
-JavaScript in `frontend/`; it is served by the API itself, so no build step or
-CORS configuration is needed, and all drawing happens in the browser.
+With the server running, open `http://127.0.0.1:8000/` to use the frontend. It
+has three areas:
+
+- **Upload Images**: select or drag and drop one or more PNG, JPG or JPEG images.
+- **Loaded Images**: appears once at least one image is loaded. It lists
+  thumbnails with each image's name and detection status; click one to show it
+  in the viewer, or its ✕ to remove it.
+- **Image Viewer**: shows the selected image, with its file name in the title. Detection runs
+  on the image being shown. Checked boxes are outlined in green, unchecked boxes
+  in red, and a summary shows the total, checked and unchecked counts. The zoom
+  controls keep the image and its overlay aligned, and the image can be panned by
+  clicking and dragging.
+
+The frontend is plain HTML, CSS and JavaScript (ES modules) in `frontend/`; it is
+served by the API itself, so no build step or CORS configuration is needed, and
+all drawing happens in the browser. The Inter font is bundled in
+`frontend/fonts/` under the SIL Open Font License.
 
 ## Dataset
 

@@ -2,7 +2,6 @@
 const MIN_ZOOM = 0.1;
 const MAX_ZOOM = 8;
 const ZOOM_STEP = 1.25;
-const COLORS = { checked: "#1a7f37", unchecked: "#cf222e" };
 
 // Shows one image with its title, detect button, summary, zoom and click-and-drag panning.
 export function createViewer({ onDetect, onImageError }) {
@@ -17,6 +16,13 @@ export function createViewer({ onDetect, onImageError }) {
   const preview = $("preview");
   const overlay = $("overlay");
   const zoomLevel = $("zoom-level");
+
+  // Box colors come from the --checked / --unchecked CSS variables.
+  const rootStyle = getComputedStyle(document.documentElement);
+  const colors = {
+    checked: rootStyle.getPropertyValue("--checked").trim(),
+    unchecked: rootStyle.getPropertyValue("--unchecked").trim(),
+  };
 
   let current = null;
   let zoom = 1;
@@ -44,7 +50,7 @@ export function createViewer({ onDetect, onImageError }) {
     context.lineWidth = Math.max(2, Math.round(Math.max(overlay.width, overlay.height) / 400));
     for (const box of boxes) {
       const [x1, y1, x2, y2] = box.bbox;
-      context.strokeStyle = box.is_checked ? COLORS.checked : COLORS.unchecked;
+      context.strokeStyle = box.is_checked ? colors.checked : colors.unchecked;
       context.strokeRect(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
     }
     const checked = boxes.filter((box) => box.is_checked).length;
