@@ -1,0 +1,8 @@
+# Tracked in git but not needed at runtime; frontend/ and checkbox_detection/
+# (code only) must stay in the bundle.
+**/tests/
+checkbox_detection/data/
+checkbox_detection/scripts/
+Dockerfile
+docker-compose.yml
+.dockerignore
