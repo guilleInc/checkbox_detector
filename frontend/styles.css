@@ -107,9 +107,7 @@ button:not(:disabled):hover { background: #0550ae; }
   background: #fff;
   border: 1px solid #d0d7de;
   border-radius: 8px;
-  cursor: grab;
 }
-.viewport.panning { cursor: grabbing; }
 
 .stage { position: relative; }
 .stage img, .stage canvas {

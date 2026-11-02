@@ -181,27 +181,4 @@
   $("zoom-in").addEventListener("click", () => applyZoom(zoom * ZOOM_STEP));
   $("zoom-out").addEventListener("click", () => applyZoom(zoom / ZOOM_STEP));
   $("zoom-fit").addEventListener("click", fitToWidth);
-
-  let pan = null;
-  viewport.addEventListener("pointerdown", (event) => {
-    if (event.pointerType === "touch" || event.button !== 0) return;
-    event.preventDefault();
-    pan = {
-      x: event.clientX, y: event.clientY,
-      left: viewport.scrollLeft, top: viewport.scrollTop,
-    };
-    viewport.setPointerCapture(event.pointerId);
-    viewport.classList.add("panning");
-  });
-  viewport.addEventListener("pointermove", (event) => {
-    if (!pan) return;
-    viewport.scrollLeft = pan.left - (event.clientX - pan.x);
-    viewport.scrollTop = pan.top - (event.clientY - pan.y);
-  });
-  const endPan = () => {
-    pan = null;
-    viewport.classList.remove("panning");
-  };
-  viewport.addEventListener("pointerup", endPan);
-  viewport.addEventListener("pointercancel", endPan);
 })();
