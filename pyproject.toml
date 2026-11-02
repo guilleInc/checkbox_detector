@@ -2,7 +2,7 @@
 name = "checkbox-detector"
 version = "0.1.0"
 description = "Detect checkboxes in images and paint them."
-requires-python = ">=3.10"
+requires-python = ">=3.14"
 dependencies = [
     "fastapi>=0.115",
     "opencv-python-headless>=5.0.0.93",

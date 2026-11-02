@@ -1,0 +1,11 @@
+services:
+  api:
+    build:
+      context: .
+      args:
+        UID: ${HOST_UID:-1000}
+        GID: ${HOST_GID:-1000}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./checkbox_detection/data:/app/checkbox_detection/data

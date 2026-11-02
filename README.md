@@ -4,8 +4,10 @@ Simple Python project for detecting checkboxes in images and painting the detect
 
 ## Requirements
 
-- Python 3.10 or newer
+- Python 3.14 or newer
 - [uv](https://docs.astral.sh/uv/)
+
+Alternatively, use [Docker](#running-with-docker) and skip installing Python and `uv`.
 
 ## Installation
 
@@ -21,6 +23,29 @@ The project currently uses:
 - [OpenCV](https://opencv.org/) for checkbox detection.
 - [Pydantic](https://docs.pydantic.dev/) for checkbox data validation.
 - [FastAPI](https://fastapi.tiangolo.com/) and [Uvicorn](https://www.uvicorn.org/) for the HTTP API.
+
+## Running with Docker
+
+Start the web UI and API at `http://localhost:8000/`:
+
+```bash
+docker compose up --build
+```
+
+Run the CLI scripts and the test suite in the container:
+
+```bash
+docker compose run --rm api python -m checkbox_detection.scripts.run_detection -d opencv_v2
+docker compose run --rm api python -m checkbox_detection.scripts.run_detection_test -d opencv_v2
+docker compose run --rm api python -m unittest discover -s . -v
+```
+
+`checkbox_detection/data/` is mounted from the host, so images placed in
+`image_dataset/` are picked up and results are written to the host's
+`detection_results/`. The container runs as a non-root user with UID/GID 1000;
+if your host user differs, build with
+`HOST_UID=$(id -u) HOST_GID=$(id -g) docker compose build` so the generated
+files belong to you.
 
 ## HTTP API
 

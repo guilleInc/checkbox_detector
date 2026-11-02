@@ -1,0 +1,9 @@
+.git
+.venv
+__pycache__
+*.pyc
+.dockerignore
+Dockerfile
+docker-compose.yml
+checkbox_detection/data/detection_results/*
+checkbox_detection/data/ground_truth_results/*
