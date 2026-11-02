@@ -1,6 +1,7 @@
 
 const MIN_ZOOM = 0.1;
 const MAX_ZOOM = 8;
+const BOX_OPACITY = 0.5;
 const ZOOM_STEP = 1.25;
 
 // Shows one image with its title, detect button, summary, zoom and click-and-drag panning.
@@ -47,12 +48,13 @@ export function createViewer({ onDetect, onImageError }) {
     summaryEl.hidden = !boxes;
     if (!boxes) return;
 
-    context.lineWidth = Math.max(2, Math.round(Math.max(overlay.width, overlay.height) / 400));
+    context.globalAlpha = BOX_OPACITY;
     for (const box of boxes) {
       const [x1, y1, x2, y2] = box.bbox;
-      context.strokeStyle = box.is_checked ? colors.checked : colors.unchecked;
-      context.strokeRect(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
+      context.fillStyle = box.is_checked ? colors.checked : colors.unchecked;
+      context.fillRect(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
     }
+    context.globalAlpha = 1;
     const checked = boxes.filter((box) => box.is_checked).length;
     $("total-count").textContent = boxes.length;
     $("checked-count").textContent = checked;

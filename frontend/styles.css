@@ -15,8 +15,8 @@
   --muted: #5f6472;
   --muted-light: #a1a5b3;
   --border: #e3e5ec;
-  --checked: #1a7f37;
-  --unchecked: #cf222e;
+  --checked: #16a34a;
+  --unchecked: #f4545f;
 }
 
 * { box-sizing: border-box; }
