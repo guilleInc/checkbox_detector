@@ -51,6 +51,17 @@ The `opencv_v1` detector uses OpenCV to find square checkbox contours and
 classifies a box as checked when its interior contains a substantial dark
 mark. It returns both checked and unchecked boxes.
 
+The `opencv_v2` detector is fully self-contained (it does not import any other
+detector). It combines multi-threshold contours, duplicate suppression, and
+conservative image-local scale filtering. If at least 5 adaptive-threshold
+candidates fall outside the standard checkbox size band, it switches to its
+adaptive strategy (adaptive thresholding, wider size range and border
+validation):
+
+```bash
+uv run python run_detection.py -d opencv_v2
+```
+
 Painted images are saved in:
 
 ```text
@@ -91,6 +102,7 @@ correctly matched states / max(expected boxes, detected boxes)
 │   ├── base_detector.py      # Detector protocol
 │   ├── dummy_v1_detector.py  # Test detector
 │   ├── opencv_v1_detector.py # OpenCV v1 checkbox detector
+│   ├── opencv_v2_detector.py # OpenCV v2 self-contained detector
 │   └── factory.py            # Detector registry
 ├── data/
 │   ├── image_dataset/        # Input images
