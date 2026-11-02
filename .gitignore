@@ -4,3 +4,4 @@ checkbox_detection/data/detection_results/*
 !checkbox_detection/data/detection_results/.gitkeep
 checkbox_detection/data/ground_truth_results/*
 !checkbox_detection/data/ground_truth_results/.gitkeep
+.fastapicloud/

@@ -3,6 +3,7 @@
 __pycache__
 *.pyc
 .dockerignore
+.fastapicloudignore
 Dockerfile
 docker-compose.yml
 checkbox_detection/data/detection_results/*

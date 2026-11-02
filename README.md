@@ -22,7 +22,8 @@ The project currently uses:
 - [Pillow](https://python-pillow.org/) for image loading and painting.
 - [OpenCV](https://opencv.org/) for checkbox detection.
 - [Pydantic](https://docs.pydantic.dev/) for checkbox data validation.
-- [FastAPI](https://fastapi.tiangolo.com/) and [Uvicorn](https://www.uvicorn.org/) for the HTTP API.
+- [FastAPI](https://fastapi.tiangolo.com/) (`fastapi[standard]`, which includes the
+  FastAPI CLI) and [Uvicorn](https://www.uvicorn.org/) for the HTTP API.
 
 ## Running with Docker
 
@@ -46,6 +47,39 @@ docker compose run --rm api python -m unittest discover -s . -v
 if your host user differs, build with
 `HOST_UID=$(id -u) HOST_GID=$(id -g) docker compose build` so the generated
 files belong to you.
+
+## Deploying to FastAPI Cloud
+
+The app can be deployed to [FastAPI Cloud](https://fastapicloud.com/docs/) with
+the FastAPI CLI, which is installed by `uv sync`. The Docker workflow is
+unaffected.
+
+```bash
+uv sync
+uv run fastapi login      # first time only; opens the browser
+uv run fastapi deploy
+```
+
+The first `fastapi deploy` asks you to create or select an app; the choice is
+stored in `.fastapicloud/` (git-ignored). Configuration used by the deploy:
+
+- **Entrypoint**: `[tool.fastapi] entrypoint = "api.app:app"` in `pyproject.toml`,
+  so `uv run fastapi dev` and `fastapi deploy` need no path argument.
+- **Dependencies and Python**: installed from `pyproject.toml` and `uv.lock`;
+  Python 3.14 comes from `requires-python` and `.python-version`.
+  `opencv-python-headless` ships pre-built wheels, so no system packages are needed.
+- **Bundle**: FastAPI Cloud uploads everything not matched by `.gitignore`, then
+  applies `.fastapicloudignore`, which excludes tests, `checkbox_detection/data/`
+  (dataset and ground truth), the CLI scripts and Docker files. `api/`,
+  `checkbox_detection/` and `frontend/` are included; the frontend is plain
+  static files, so there is no build step before deploying.
+
+After deploying, check `/`, `/docs` and `POST /detect` on the app's URL, for example:
+
+```bash
+curl -X POST "https://<your-app>.fastapicloud.dev/detect" \
+  -F "file=@checkbox_detection/data/image_dataset/image_1.png"
+```
 
 ## HTTP API
 
