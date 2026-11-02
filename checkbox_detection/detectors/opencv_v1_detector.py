@@ -2,7 +2,7 @@ from pathlib import Path
 
 import cv2
 
-from models import Checkbox
+from checkbox_detection.models import Checkbox
 
 MIN_BOX_SIZE_RATIO = 0.0075
 MAX_BOX_SIZE_RATIO = 0.02

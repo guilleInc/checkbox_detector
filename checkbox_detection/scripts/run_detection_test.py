@@ -1,9 +1,10 @@
 """Evaluate a detector against the dataset ground truth.
 
 Usage:
-    uv run python run_detection_test.py -d dummy_v1
+    uv run python -m checkbox_detection.scripts.run_detection_test -d dummy_v1
 
-The JSON report is saved in data/detection_results/ by default. The score is:
+The JSON report is saved in checkbox_detection/data/detection_results/ by default.
+The score is:
 
     correctly matched states / max(expected boxes, detected boxes)
 
@@ -15,11 +16,11 @@ import argparse
 import json
 from pathlib import Path
 
-from detection_test import IOU_THRESHOLD, DetectionTestResult, run_detection_test
-from detectors.factory import DETECTORS, get_detector
-from paint_ground_truth import DEFAULT_GROUND_TRUTH_PATH, load_ground_truth
+from checkbox_detection import available_detectors, get_detector
+from checkbox_detection.evaluation import IOU_THRESHOLD, DetectionTestResult, run_detection_test
+from checkbox_detection.scripts.paint_ground_truth import DEFAULT_GROUND_TRUTH_PATH, load_ground_truth
 
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 DEFAULT_OUTPUT_DIR = BASE_DIR / "data" / "detection_results"
 
 
@@ -39,7 +40,7 @@ def parse_args() -> argparse.Namespace:
         "-d",
         "--detector",
         required=True,
-        choices=sorted(DETECTORS),
+        choices=available_detectors(),
         help="name of the detector to evaluate",
     )
     parser.add_argument(
@@ -52,7 +53,7 @@ def parse_args() -> argparse.Namespace:
         "--output",
         type=Path,
         default=None,
-        help="path for the JSON report (default: data/detection_results/<detector>_evaluation.json)",
+        help="path for the JSON report (default: checkbox_detection/data/detection_results/<detector>_evaluation.json)",
     )
     parser.add_argument(
         "--iou-threshold",

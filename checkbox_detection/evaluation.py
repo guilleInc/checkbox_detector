@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 
-from models import Checkbox
+from checkbox_detection.models import Checkbox
 
 IOU_THRESHOLD = 0.5
 

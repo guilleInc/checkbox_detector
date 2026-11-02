@@ -1,11 +1,11 @@
 import unittest
 from pathlib import Path
 
-from detection_test import run_detection_test
-from detectors.factory import get_detector
-from detectors.opencv_v2_detector import OpenCVV2CheckboxesDetector
-from models import Checkbox
-from paint_ground_truth import load_ground_truth
+from checkbox_detection.detectors.factory import get_detector
+from checkbox_detection.detectors.opencv_v2_detector import OpenCVV2CheckboxesDetector
+from checkbox_detection.evaluation import run_detection_test
+from checkbox_detection.models import Checkbox
+from checkbox_detection.scripts.paint_ground_truth import load_ground_truth
 
 
 BASE_DIR = Path(__file__).resolve().parents[1]
