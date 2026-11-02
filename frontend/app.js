@@ -181,4 +181,28 @@
   $("zoom-in").addEventListener("click", () => applyZoom(zoom * ZOOM_STEP));
   $("zoom-out").addEventListener("click", () => applyZoom(zoom / ZOOM_STEP));
   $("zoom-fit").addEventListener("click", fitToWidth);
+
+  // Click-and-drag panning: scroll the viewport by the mouse movement.
+  let lastX = 0;
+  let lastY = 0;
+  let panning = false;
+  viewport.addEventListener("mousedown", (event) => {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    panning = true;
+    lastX = event.clientX;
+    lastY = event.clientY;
+    viewport.classList.add("panning");
+  });
+  window.addEventListener("mousemove", (event) => {
+    if (!panning) return;
+    viewport.scrollLeft -= event.clientX - lastX;
+    viewport.scrollTop -= event.clientY - lastY;
+    lastX = event.clientX;
+    lastY = event.clientY;
+  });
+  window.addEventListener("mouseup", () => {
+    panning = false;
+    viewport.classList.remove("panning");
+  });
 })();
