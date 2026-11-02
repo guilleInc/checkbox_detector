@@ -61,6 +61,26 @@ documentation at `/redoc`, and the OpenAPI schema at `/openapi.json`. The
 application checks uploaded file size after multipart parsing; when deploying
 to untrusted clients, also configure a request-body limit at the ingress.
 
+## Web interface
+
+With the server running, open `http://127.0.0.1:8000/` to use the frontend. It
+has three areas:
+
+- **Upload Images**: select or drag and drop one or more PNG, JPG or JPEG images.
+- **Loaded Images**: appears once at least one image is loaded. It lists
+  thumbnails with each image's name and detection status; click one to show it
+  in the viewer, or its ✕ to remove it.
+- **Image Viewer**: shows the selected image, with its file name in the title. Detection runs
+  on the image being shown. Checked boxes are outlined in green, unchecked boxes
+  in red, and a summary shows the total, checked and unchecked counts. The zoom
+  controls keep the image and its overlay aligned, and the image can be panned by
+  clicking and dragging.
+
+The frontend is plain HTML, CSS and JavaScript (ES modules) in `frontend/`; it is
+served by the API itself, so no build step or CORS configuration is needed, and
+all drawing happens in the browser. The Inter font is bundled in
+`frontend/fonts/` under the SIL Open Font License.
+
 ## Dataset
 
 Place the input images in:
@@ -144,9 +164,10 @@ uv run python -m checkbox_detection.scripts.paint_ground_truth
 ```text
 .
 ├── api/
-│   ├── app.py                # FastAPI detection endpoint
+│   ├── app.py                # FastAPI detection endpoint and static frontend
 │   ├── schemas.py            # API response schema
 │   └── tests/                # HTTP API tests
+├── frontend/                 # Vanilla HTML/CSS/JS web interface
 └── checkbox_detection/
     ├── detectors/            # Detector protocol, implementations, and registry
     ├── models.py             # Checkbox data model
@@ -161,7 +182,7 @@ uv run python -m checkbox_detection.scripts.paint_ground_truth
 The detection package is independent of FastAPI. Other Python code can import
 `get_detector`, `available_detectors`, and `Checkbox` from `checkbox_detection`;
 the API uses this public interface instead of the detector registry internals.
-A future frontend can use the HTTP API without importing the Python package.
+A frontend can also use the HTTP API without importing the Python package.
 
 ## Adding a detector
 

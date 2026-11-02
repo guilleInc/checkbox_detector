@@ -3,6 +3,7 @@ import tempfile
 from pathlib import Path
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi.staticfiles import StaticFiles
 
 from api.schemas import DetectionResponse
 from checkbox_detection import (
@@ -16,6 +17,7 @@ from checkbox_detection import (
 MAX_UPLOAD_BYTES = 10 * 1024 * 1024
 MAX_IMAGE_PIXELS = 25_000_000
 READ_CHUNK_BYTES = 1024 * 1024
+FRONTEND_DIRECTORY = Path(__file__).resolve().parent.parent / "frontend"
 
 logger = logging.getLogger(__name__)
 app = FastAPI()
@@ -47,3 +49,7 @@ def detect(file: UploadFile = File(...), detector: str = "opencv_v2") -> Detecti
     except Exception as exc:
         logger.exception("Checkbox detection failed")
         raise HTTPException(status_code=500, detail="Checkbox detection failed.") from exc
+
+
+# Mounted last so the API routes and the generated documentation take precedence.
+app.mount("/", StaticFiles(directory=FRONTEND_DIRECTORY, html=True), name="frontend")
