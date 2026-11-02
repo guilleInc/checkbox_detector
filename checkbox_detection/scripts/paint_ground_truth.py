@@ -1,9 +1,9 @@
-"""Paint the checkbox annotations from data/ground_truth.json onto the images.
+"""Paint annotations from checkbox_detection/data/ground_truth.json onto the images.
 
 Usage:
-    uv run python paint_ground_truth.py
+    uv run python -m checkbox_detection.scripts.paint_ground_truth
 
-Annotated images are saved in data/ground_truth_results/ by default.
+Annotated images are saved in checkbox_detection/data/ground_truth_results/ by default.
 """
 
 import argparse
@@ -11,10 +11,10 @@ import json
 import shutil
 from pathlib import Path
 
-from checkbox_painter import CheckboxPainter
-from models import Checkbox
+from checkbox_detection.models import Checkbox
+from checkbox_detection.painting import CheckboxPainter
 
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 DEFAULT_GROUND_TRUTH_PATH = BASE_DIR / "data" / "ground_truth.json"
 DEFAULT_OUTPUT_DIR = BASE_DIR / "data" / "ground_truth_results"
 

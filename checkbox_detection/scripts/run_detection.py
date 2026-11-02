@@ -1,10 +1,10 @@
-"""Run a checkbox detector over every image in data/image_dataset/ and paint the results.
+"""Run a checkbox detector over every image in checkbox_detection/data/image_dataset/.
 
 Usage:
-    python run_detection.py -d dummy_v1
+    python -m checkbox_detection.scripts.run_detection -d dummy_v1
 
-Painted images are saved in data/detection_results/<detector>/. If that folder
-already exists, it is emptied first.
+Painted images are saved in checkbox_detection/data/detection_results/<detector>/.
+If that folder already exists, it is emptied first.
 """
 
 import argparse
@@ -12,11 +12,10 @@ import shutil
 import sys
 from pathlib import Path
 
-from checkbox_painter import CheckboxPainter
-from detectors import get_detector
-from detectors.factory import DETECTORS
+from checkbox_detection import available_detectors, get_detector
+from checkbox_detection.painting import CheckboxPainter
 
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 IMAGE_DATASET_DIR = BASE_DIR / "data" / "image_dataset"
 DETECTION_RESULTS_DIR = BASE_DIR / "data" / "detection_results"
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp", ".gif", ".tif", ".tiff", ".webp"}
@@ -24,13 +23,13 @@ IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp", ".gif", ".tif", ".tiff", ".
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Detect checkboxes in data/image_dataset/ and paint them in data/detection_results/."
+        description="Detect checkboxes in checkbox_detection/data/image_dataset/ and paint the results."
     )
     parser.add_argument(
         "-d",
         dest="detector",
         required=True,
-        choices=sorted(DETECTORS),
+        choices=available_detectors(),
         help="name of the detector to use",
     )
     return parser.parse_args()

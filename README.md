@@ -20,13 +20,53 @@ The project currently uses:
 - [Pillow](https://python-pillow.org/) for image loading and painting.
 - [OpenCV](https://opencv.org/) for checkbox detection.
 - [Pydantic](https://docs.pydantic.dev/) for checkbox data validation.
+- [FastAPI](https://fastapi.tiangolo.com/) and [Uvicorn](https://www.uvicorn.org/) for the HTTP API.
+
+## HTTP API
+
+Start the server from the repository root:
+
+```bash
+uv run uvicorn api.app:app --host 127.0.0.1 --port 8000
+```
+
+Upload an image with:
+
+```bash
+curl -X POST "http://127.0.0.1:8000/detect" \
+  -F "file=@checkbox_detection/data/image_dataset/image_1.png"
+```
+
+The default detector is `opencv_v2`. Select another registered detector with
+the `detector` query parameter, for example `/detect?detector=opencv_v1`.
+The response contains the detected checkboxes:
+
+```json
+{
+  "boxes": [
+    {"bbox": [10, 20, 30, 40], "is_checked": true}
+  ]
+}
+```
+
+Coordinates are inclusive `[x1, y1, x2, y2]` pixels; an image with no detected
+checkboxes returns `{"boxes": []}`. Images must be readable by both Pillow
+and OpenCV and are limited to 10 MiB per file and 25 million pixels. Invalid
+images or unknown detectors return HTTP 400, oversized images return HTTP 413,
+and detection failures return HTTP 500 without server file paths. A missing
+file returns HTTP 422.
+
+FastAPI's interactive documentation is available at `/docs`, alternative
+documentation at `/redoc`, and the OpenAPI schema at `/openapi.json`. The
+application checks uploaded file size after multipart parsing; when deploying
+to untrusted clients, also configure a request-body limit at the ingress.
 
 ## Dataset
 
 Place the input images in:
 
 ```text
-data/image_dataset/
+checkbox_detection/data/image_dataset/
 ```
 
 The runner supports common image formats, including PNG, JPEG, BMP, GIF, TIFF, and WEBP.
@@ -36,7 +76,7 @@ The runner supports common image formats, including PNG, JPEG, BMP, GIF, TIFF, a
 Run the active detector with:
 
 ```bash
-uv run python run_detection.py -d dummy_v1
+uv run python -m checkbox_detection.scripts.run_detection -d dummy_v1
 ```
 
 The `dummy_v1` detector is a test detector that generates sample checkbox regions. It does not analyze the image contents.
@@ -44,7 +84,7 @@ The `dummy_v1` detector is a test detector that generates sample checkbox region
 To detect checkbox regions in the dataset with the `opencv_v1` detector, run:
 
 ```bash
-uv run python run_detection.py -d opencv_v1
+uv run python -m checkbox_detection.scripts.run_detection -d opencv_v1
 ```
 
 The `opencv_v1` detector uses OpenCV to find square checkbox contours and
@@ -59,33 +99,33 @@ adaptive strategy (adaptive thresholding, wider size range and border
 validation):
 
 ```bash
-uv run python run_detection.py -d opencv_v2
+uv run python -m checkbox_detection.scripts.run_detection -d opencv_v2
 ```
 
 Painted images are saved in:
 
 ```text
-data/detection_results/<detector>/
+checkbox_detection/data/detection_results/<detector>/
 ```
 
 The original images are preserved. Each result uses the original filename with `_painted` appended before the extension. For example:
 
 ```text
-image_1.png -> data/detection_results/dummy_v1/image_1_painted.png
+image_1.png -> checkbox_detection/data/detection_results/dummy_v1/image_1_painted.png
 ```
 
 The output directory is cleared and recreated each time the detector runs.
 
 ## Evaluating a detector
 
-Run a detector against every image in `data/image_dataset/` with:
+Run a detector against every image in `checkbox_detection/data/image_dataset/` with:
 
 ```bash
-uv run python run_detection_test.py -d dummy_v1
+uv run python -m checkbox_detection.scripts.run_detection_test -d dummy_v1
 ```
 
 The evaluation report is saved to
-`data/detection_results/<detector>_evaluation.json`. It includes per-image
+`checkbox_detection/data/detection_results/<detector>_evaluation.json`. It includes per-image
 matches, extra boxes, missed boxes, checked-state accuracy, and a summary.
 The simple score is between 0 and 1:
 
@@ -93,26 +133,45 @@ The simple score is between 0 and 1:
 correctly matched states / max(expected boxes, detected boxes)
 ```
 
+To paint the ground-truth annotations, run:
+
+```bash
+uv run python -m checkbox_detection.scripts.paint_ground_truth
+```
+
 ## Project structure
 
 ```text
 .
-├── checkbox_painter.py       # Paints detected checkboxes on image copies
-├── detectors/
-│   ├── base_detector.py      # Detector protocol
-│   ├── dummy_v1_detector.py  # Test detector
-│   ├── opencv_v1_detector.py # OpenCV v1 checkbox detector
-│   ├── opencv_v2_detector.py # OpenCV v2 self-contained detector
-│   └── factory.py            # Detector registry
-├── data/
-│   ├── image_dataset/        # Input images
-│   └── detection_results/    # Generated output images
-├── models.py                 # Checkbox data model
-├── run_detection.py          # Detector painting entry point
-├── detection_test.py         # Matching and evaluation metrics
-└── run_detection_test.py     # Evaluation command-line entry point
+├── api/
+│   ├── app.py                # FastAPI detection endpoint
+│   ├── schemas.py            # API response schema
+│   └── tests/                # HTTP API tests
+└── checkbox_detection/
+    ├── detectors/            # Detector protocol, implementations, and registry
+    ├── models.py             # Checkbox data model
+    ├── evaluation.py         # Matching and evaluation metrics
+    ├── painting.py           # Paints checkbox annotations on image copies
+    ├── validation.py         # Image validation and domain errors
+    ├── data/                 # Dataset, ground truth, and generated outputs
+    ├── scripts/              # Detection, evaluation, and painting commands
+    └── tests/                # Detection and workflow tests
 ```
+
+The detection package is independent of FastAPI. Other Python code can import
+`get_detector`, `available_detectors`, and `Checkbox` from `checkbox_detection`;
+the API uses this public interface instead of the detector registry internals.
+A future frontend can use the HTTP API without importing the Python package.
 
 ## Adding a detector
 
-Implement the `CheckboxesDetector` protocol in `detectors/`, then register the detector class in `detectors/factory.py`. The registered name becomes available through the `-d` command-line option.
+Implement the `CheckboxesDetector` protocol in `checkbox_detection/detectors/`,
+then register the detector class in `checkbox_detection/detectors/factory.py`.
+The registered name becomes available through the `-d` command-line option and
+the API's `detector` query parameter.
+
+## Running tests
+
+```bash
+uv run python -m unittest discover -s . -v
+```

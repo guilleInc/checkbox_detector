@@ -2,7 +2,7 @@ from pathlib import Path
 
 from PIL import Image, ImageColor, ImageDraw
 
-from models import Checkbox
+from checkbox_detection.models import Checkbox
 
 
 class CheckboxPainter:

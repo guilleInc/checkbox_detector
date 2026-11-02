@@ -14,7 +14,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
-from models import Checkbox
+from checkbox_detection.models import Checkbox
 
 Rect = tuple[int, int, int, int]  # x, y, width, height
 

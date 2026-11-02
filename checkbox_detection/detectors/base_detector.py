@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Protocol
 
-from models import Checkbox
+from checkbox_detection.models import Checkbox
 
 
 class CheckboxesDetector(Protocol):

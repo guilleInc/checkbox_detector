@@ -3,7 +3,7 @@ from pathlib import Path
 
 from PIL import Image
 
-from models import Checkbox
+from checkbox_detection.models import Checkbox
 
 BOX_SIZE = 25
 CHECKED_COUNT = 10
