@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Checkbox Detector</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main>
+    <h1>Checkbox Detector</h1>
+
+    <label id="drop-zone" class="drop-zone" for="file-input" tabindex="0">
+      <span>Drag and drop an image here, or click to select one</span>
+      <small>PNG, JPG or JPEG, up to 10 MiB</small>
+      <input id="file-input" type="file" accept="image/png,image/jpeg,.png,.jpg,.jpeg" hidden>
+    </label>
+
+    <div class="actions">
+      <button id="detect-button" type="button" disabled>Detect checkboxes</button>
+      <span id="status" role="status" aria-live="polite"></span>
+    </div>
+    <p id="error" class="error" role="alert" hidden></p>
+
+    <section id="summary" class="summary" hidden aria-label="Detection summary">
+      <div><strong id="total-count">0</strong> total</div>
+      <div class="checked"><strong id="checked-count">0</strong> checked</div>
+      <div class="unchecked"><strong id="unchecked-count">0</strong> unchecked</div>
+    </section>
+
+    <section id="viewer" hidden aria-label="Image preview">
+      <div class="zoom-controls">
+        <button id="zoom-out" type="button" aria-label="Zoom out">&minus;</button>
+        <span id="zoom-level">100%</span>
+        <button id="zoom-in" type="button" aria-label="Zoom in">+</button>
+        <button id="zoom-fit" type="button">Fit</button>
+      </div>
+      <div id="viewport" class="viewport">
+        <div id="stage" class="stage">
+          <img id="preview" alt="Selected image">
+          <canvas id="overlay"></canvas>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
