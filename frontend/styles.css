@@ -148,6 +148,23 @@ button:not(:disabled):hover { background: var(--brand-dark); }
   outline: none;
 }
 
+.sample-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 12px;
+  margin-top: 16px;
+  color: var(--muted);
+}
+.sample-button {
+  color: var(--brand);
+  background: #fff;
+  border: 1px solid var(--brand);
+}
+.sample-button:not(:disabled):hover, .sample-button:focus-visible { color: var(--brand); background: var(--brand-soft); }
+.sample-button:disabled { color: var(--muted); background: #fff; border-color: var(--muted-light); cursor: progress; }
+
 /* 2. Loaded images */
 .count {
   display: inline-block;

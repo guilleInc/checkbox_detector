@@ -2,6 +2,17 @@ const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 const ALLOWED_TYPES = ["image/png", "image/jpeg"];
 const ALLOWED_EXTENSIONS = [".png", ".jpg", ".jpeg"];
 
+const SAMPLE_NAMES = ["image_1.png", "image_2.jpg", "image_3.png", "image_4.png"];
+
+async function fetchSample(name) {
+  const response = await fetch(`/samples/${name}`);
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  const blob = await response.blob();
+  const file = new File([blob], name, { type: blob.type });
+  file.isSample = true;
+  return file;
+}
+
 function isSupported(file) {
   const name = file.name.toLowerCase();
   return ALLOWED_TYPES.includes(file.type)
@@ -34,6 +45,19 @@ export function createUploader({ onFiles }) {
     showError(problems.join(" "));
     if (valid.length) onFiles(valid);
   }
+
+  const sampleButton = document.getElementById("sample-button");
+  sampleButton.addEventListener("click", async () => {
+    sampleButton.disabled = true;
+    showError("");
+    try {
+      onFiles(await Promise.all(SAMPLE_NAMES.map(fetchSample)));
+    } catch (_) {
+      showError("Could not load the sample images. Please try again.");
+    } finally {
+      sampleButton.disabled = false;
+    }
+  });
 
   fileInput.addEventListener("change", () => {
     handle(fileInput.files);

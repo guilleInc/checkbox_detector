@@ -1,7 +1,7 @@
 {
   "images": [
     {
-      "image": "data/image_dataset/image_1.png",
+      "image": "data/image_dataset/image_5.png",
       "boxes": [
         {"bbox": [445, 416, 469, 438], "is_checked": true},
         {"bbox": [512, 416, 537, 438], "is_checked": false},
@@ -124,7 +124,7 @@
       ]
     },
     {
-      "image": "data/image_dataset/image_2.png",
+      "image": "data/image_dataset/image_6.png",
       "boxes": [
         {"bbox": [327, 277, 347, 298], "is_checked": false},
         {"bbox": [431, 277, 452, 299], "is_checked": true},
@@ -172,7 +172,7 @@
       ]
     },
     {
-      "image": "data/image_dataset/image_3.png",
+      "image": "data/image_dataset/image_7.png",
       "boxes": [
         {"bbox": [1058, 543, 1082, 565], "is_checked": true},
         {"bbox": [1165, 543, 1189, 565], "is_checked": false},
@@ -225,7 +225,7 @@
       ]
     },
     {
-      "image": "data/image_dataset/image_4.png",
+      "image": "data/image_dataset/image_8.png",
       "boxes": [
         {"bbox": [432, 402, 449, 419], "is_checked": true},
         {"bbox": [501, 402, 517, 419], "is_checked": false},

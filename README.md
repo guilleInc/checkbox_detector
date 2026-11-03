@@ -125,7 +125,9 @@ to untrusted clients, also configure a request-body limit at the ingress.
 With the server running, open `http://127.0.0.1:8000/` to use the frontend. It
 has three areas:
 
-- **Upload Images**: select or drag and drop one or more PNG, JPG or JPEG images.
+- **Upload Images**: select or drag and drop one or more PNG, JPG or JPEG images,
+  or click **Try sample images** to load four bundled examples from
+  `frontend/samples/` without uploading anything.
 - **Loaded Images**: appears once at least one image is loaded. It lists
   thumbnails with each image's name and detection status; click one to show it
   in the viewer, or its ✕ to remove it.
@@ -226,7 +228,7 @@ uv run python -m checkbox_detection.scripts.paint_ground_truth
 │   ├── app.py                # FastAPI detection endpoint and static frontend
 │   ├── schemas.py            # API response schema
 │   └── tests/                # HTTP API tests
-├── frontend/                 # Vanilla HTML/CSS/JS web interface
+├── frontend/                 # Vanilla HTML/CSS/JS web interface (samples/ holds the demo images)
 └── checkbox_detection/
     ├── detectors/            # Detector protocol, implementations, and registry
     ├── models.py             # Checkbox data model

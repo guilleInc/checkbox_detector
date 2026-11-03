@@ -1,3 +1,6 @@
+import { truncateName } from "./filename.js";
+
+const TITLE_NAME_MAX = 40;
 
 const MIN_ZOOM = 0.1;
 const MAX_ZOOM = 8;
@@ -69,10 +72,12 @@ export function createViewer({ onDetect, onImageError }) {
       preview.removeAttribute("src");
       delete preview.dataset.url;
       titleEl.textContent = "";
+      titleEl.removeAttribute("title");
       return;
     }
 
-    titleEl.textContent = item.file.name;
+    titleEl.textContent = truncateName(item.file.name, TITLE_NAME_MAX);
+    titleEl.title = item.file.name;
     const detecting = item.status === "detecting";
     detectButton.disabled = detecting;
     detectButton.textContent = detecting ? "Detecting…" : "Detect checkboxes";
