@@ -21,7 +21,11 @@ function render() {
   viewer.render(items[activeIndex] || null);
 }
 
-function addFiles(files) {
+function addFiles(allFiles) {
+  // Sample images already in the list are not added again.
+  const files = allFiles.filter((file) => !(file.isSample
+    && items.some((item) => item.file.isSample && item.file.name === file.name)));
+  if (!files.length) return;
   activeIndex = items.length;
   items.push(...files.map((file) => ({
     file,

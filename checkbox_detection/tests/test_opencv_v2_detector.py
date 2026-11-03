@@ -35,12 +35,12 @@ class OpenCVV2DetectorTest(unittest.TestCase):
             results[image_path.name] = result
             self.assertEqual(result.matched_boxes, result.matched_with_correct_state)
 
-        self.assertEqual(results["image_3.png"].extra_boxes, 0)
+        self.assertEqual(results["image_7.png"].extra_boxes, 0)
         self.assertLessEqual(sum(r.extra_boxes for r in results.values()), 1)
         self.assertGreaterEqual(sum(r.matched_boxes for r in results.values()), 277)
 
     def test_large_checkbox_images_are_detected(self):
-        for image_name, minimum in (("image_5.png", 100), ("image_7.png", 40)):
+        for image_name, minimum in (("image_1.png", 100), ("image_3.png", 40)):
             image_path = IMAGE_DIR / image_name
             if not image_path.exists():
                 self.skipTest(f"{image_name} is not available")

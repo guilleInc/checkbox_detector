@@ -1,5 +1,6 @@
 import asyncio
 import io
+import re
 import tempfile
 import threading
 import unittest
@@ -77,12 +78,25 @@ class DetectionAPITest(unittest.TestCase):
     def test_real_detector_matches_existing_detector(self):
         image_path = (
             Path(__file__).resolve().parents[2]
-            / "checkbox_detection/data/image_dataset/image_6.jpg"
+            / "checkbox_detection/data/image_dataset/image_2.jpg"
         )
         expected = [box.model_dump(mode="json") for box in get_detector("opencv_v2").detect(image_path)]
         response = self.post_image(image_path.read_bytes(), filename=image_path.name)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"boxes": expected})
+
+    def test_sample_images_listed_in_uploader_are_served_and_detectable(self):
+        uploader = (api_app.FRONTEND_DIRECTORY / "uploader.js").read_text()
+        names = re.search(r"SAMPLE_NAMES = \[(.*?)\]", uploader).group(1)
+        names = re.findall(r'"([^"]+)"', names)
+        self.assertEqual(len(names), 4)
+        for name in names:
+            with self.subTest(name=name):
+                sample = self.client.get(f"/samples/{name}")
+                self.assertEqual(sample.status_code, 200)
+                self.assertTrue(sample.headers["content-type"].startswith("image/"))
+                response = self.post_image(sample.content, filename=name)
+                self.assertEqual(response.status_code, 200)
 
     def test_registered_dummy_detector(self):
         response = self.post_image(detector="dummy_v1")
@@ -167,8 +181,8 @@ class DetectionAPITest(unittest.TestCase):
         index = self.client.get("/")
         self.assertEqual(index.status_code, 200)
         self.assertIn("text/html", index.headers["content-type"])
-        self.assertIn("Checkboxes Detector", index.text)
-        for path in ("/fonts/inter-latin.woff2", "/logo.svg", "/app.js", "/uploader.js", "/gallery.js", "/viewer.js", "/status.js", "/styles.css"):
+        self.assertIn("<title>CheckboxDetector</title>", index.text)
+        for path in ("/fonts/inter-latin.woff2", "/logo.svg", "/app.js", "/uploader.js", "/gallery.js", "/viewer.js", "/status.js", "/filename.js", "/styles.css"):
             with self.subTest(path=path):
                 self.assertEqual(self.client.get(path).status_code, 200)
         self.assertEqual(self.client.get("/missing.js").status_code, 404)

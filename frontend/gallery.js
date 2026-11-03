@@ -1,4 +1,7 @@
+import { truncateName } from "./filename.js";
 import { STATUS_LABELS } from "./status.js";
+
+const THUMB_NAME_MAX = 16;
 
 // List of loaded images: click one to select it, or its ✕ to remove it.
 export function createGallery({ onSelect, onRemove }) {
@@ -20,7 +23,7 @@ export function createGallery({ onSelect, onRemove }) {
     image.alt = "";
     const name = document.createElement("span");
     name.className = "thumb-name";
-    name.textContent = item.file.name;
+    name.textContent = truncateName(item.file.name, THUMB_NAME_MAX);
     const status = document.createElement("span");
     status.className = `status ${item.status}`;
     status.textContent = STATUS_LABELS[item.status];
