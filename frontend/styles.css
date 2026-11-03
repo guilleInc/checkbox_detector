@@ -47,7 +47,14 @@ body {
   margin: 0 auto;
   padding: 0 16px;
 }
+.brand { display: inline-flex; align-items: center; gap: 4px; text-decoration: none; }
 .logo { display: block; height: 32px; width: auto; }
+.brand-name {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
 
 main {
   max-width: 960px;
