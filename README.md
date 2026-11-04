@@ -1,9 +1,10 @@
 # Checkbox Detector
 
-Detects checkboxes in images (such as scanned forms). For each
-checkbox it returns the bounding box (`[x1, y1, x2, y2]` in pixels) and whether
-it is checked. It is exposed as a FastAPI service (`POST /detect`) with a small
-web UI to upload an image and see the results.
+Checkbox detector for images and scanned documents. It finds every checkbox in
+the image and classifies each one as **checked** or **unchecked**.
+
+It is exposed as a FastAPI service with a single endpoint (`POST /detect`) and
+a small web UI to upload an image and see the results.
 
 ## Try the hosted version!
 
@@ -11,27 +12,9 @@ The app is already deployed and can be tried without installing anything:
 
 <https://checkbox-detector-2c01812c.fastapicloud.dev/>
 
-## Accepted images
-
-- **Format:** PNG or JPEG (`.png`, `.jpg`, `.jpeg`). The web UI only accepts
-  these. The API validates the file content, not its name or MIME type, so
-  other formats the server can decode may also work, but only PNG and JPEG are
-  supported.
-- **File size:** up to 10 MiB.
-- **Resolution:** up to 25 megapixels (width × height, e.g. 5000 × 5000). An A4
-  page scanned at 300 DPI is about 8.7 megapixels.
-
-`POST /detect` answers `400` for an unreadable or unsupported image and `413`
-when the file size or the resolution exceeds the limits.
-
 ## Running locally with Docker
 
-The app is served at `http://localhost:8000/`. Before starting, make sure no
-other service is listening on port 8000:
-
-```bash
-ss -ltnp | grep ':8000'   # no output = port is free
-```
+The app is served at `http://localhost:8000/`.
 
 Start it:
 
@@ -58,6 +41,19 @@ without the web UI. Open `/docs` on the hosted app
 3. Choose the image file to upload (optionally set `detector`; the default is
    `opencv_v2`).
 4. Click **Execute** and read the detections in the response body.
+
+## Accepted images
+
+- **Format:** PNG or JPEG (`.png`, `.jpg`, `.jpeg`). The web UI only accepts
+  these. The API validates the file content, not its name or MIME type, so
+  other formats the server can decode may also work, but only PNG and JPEG are
+  supported.
+- **File size:** up to 10 MiB.
+- **Resolution:** up to 25 megapixels (width × height, e.g. 5000 × 5000). An A4
+  page scanned at 300 DPI is about 8.7 megapixels.
+
+`POST /detect` answers `400` for an unreadable or unsupported image and `413`
+when the file size or the resolution exceeds the limits.
 
 ## Development setup
 
