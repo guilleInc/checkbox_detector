@@ -5,7 +5,7 @@ from checkbox_detection.models import Checkbox
 IOU_THRESHOLD = 0.5
 
 
-class DetectionTestResult(BaseModel):
+class DetectorEvaluationResult(BaseModel):
     """Detection metrics and the boxes that were missed or added by a detector."""
 
     image_name: str = ""
@@ -20,7 +20,7 @@ class DetectionTestResult(BaseModel):
     extra_box_details: list[Checkbox] = Field(default_factory=list)
     missed_box_details: list[Checkbox] = Field(default_factory=list)
 
-    def add(self, other: "DetectionTestResult") -> None:
+    def add(self, other: "DetectorEvaluationResult") -> None:
         """Accumulate another result, including its unmatched boxes."""
         self.expected_boxes += other.expected_boxes
         self.expected_checked += other.expected_checked
@@ -111,12 +111,12 @@ def _match_boxes(
     )
 
 
-def run_detection_test(
+def evaluate_detection(
     image_name: str,
     detected: list[Checkbox],
     expected: list[Checkbox],
     iou_threshold: float = IOU_THRESHOLD,
-) -> DetectionTestResult:
+) -> DetectorEvaluationResult:
     """Compare detected boxes with expected boxes and retain unmatched details."""
     if not 0.0 <= iou_threshold <= 1.0:
         raise ValueError("iou_threshold must be between 0 and 1")
@@ -142,7 +142,7 @@ def run_detection_test(
     )
     expected_checked = sum(box.is_checked for box in expected)
 
-    return DetectionTestResult(
+    return DetectorEvaluationResult(
         image_name=image_name,
         expected_boxes=len(expected),
         expected_checked=expected_checked,

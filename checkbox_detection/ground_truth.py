@@ -1,22 +1,10 @@
-"""Paint annotations from checkbox_detection/data/ground_truth.json onto the images.
-
-Usage:
-    uv run python -m checkbox_detection.scripts.paint_ground_truth
-
-Annotated images are saved in checkbox_detection/data/ground_truth_results/ by default.
-"""
-
-import argparse
 import json
-import shutil
 from pathlib import Path
 
 from checkbox_detection.models import Checkbox
-from checkbox_detection.painting import CheckboxPainter
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent
 DEFAULT_GROUND_TRUTH_PATH = BASE_DIR / "data" / "ground_truth.json"
-DEFAULT_OUTPUT_DIR = BASE_DIR / "data" / "ground_truth_results"
 
 
 def load_ground_truth(path: Path) -> list[tuple[Path, list[Checkbox]]]:
@@ -60,47 +48,3 @@ def load_ground_truth(path: Path) -> list[tuple[Path, list[Checkbox]]]:
         annotations.append((image_path, checkboxes))
 
     return annotations
-
-
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Paint ground-truth checkbox annotations onto dataset images."
-    )
-    parser.add_argument(
-        "--ground-truth",
-        type=Path,
-        default=DEFAULT_GROUND_TRUTH_PATH,
-        help=f"path to the ground-truth JSON (default: {DEFAULT_GROUND_TRUTH_PATH})",
-    )
-    parser.add_argument(
-        "--output-dir",
-        type=Path,
-        default=DEFAULT_OUTPUT_DIR,
-        help=f"directory for painted images (default: {DEFAULT_OUTPUT_DIR})",
-    )
-    return parser.parse_args()
-
-
-def main() -> None:
-    args = parse_args()
-    annotations = load_ground_truth(args.ground_truth)
-
-    if args.output_dir.exists() and not args.output_dir.is_dir():
-        raise ValueError(f"Output path is not a directory: '{args.output_dir}'")
-    args.output_dir.mkdir(parents=True, exist_ok=True)
-    for existing_path in args.output_dir.iterdir():
-        if existing_path.name == ".gitkeep":
-            continue
-        if existing_path.is_dir():
-            shutil.rmtree(existing_path)
-        else:
-            existing_path.unlink()
-    painter = CheckboxPainter(args.output_dir)
-
-    for image_path, checkboxes in annotations:
-        saved = painter.paint(image_path, checkboxes)
-        print(f"{image_path.name}: {len(checkboxes)} checkboxes -> {saved}")
-
-
-if __name__ == "__main__":
-    main()

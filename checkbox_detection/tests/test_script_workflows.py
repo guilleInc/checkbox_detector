@@ -12,7 +12,7 @@ from checkbox_detection.scripts import run_detection
 
 
 class ScriptWorkflowTest(unittest.TestCase):
-    def test_dataset_painting_and_evaluation_commands(self):
+    def test_detection_and_evaluation_commands(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             image_dir = root / "images"
@@ -31,17 +31,9 @@ class ScriptWorkflowTest(unittest.TestCase):
                 run_detection.main()
             self.assertTrue((results / "dummy_v1" / "sample_painted.png").is_file())
 
-            painted = root / "painted"
-            subprocess.run(
-                [sys.executable, "-m", "checkbox_detection.scripts.paint_ground_truth",
-                 "--ground-truth", str(ground_truth), "--output-dir", str(painted)],
-                check=True, capture_output=True, text=True,
-            )
-            self.assertTrue((painted / "sample_painted.png").is_file())
-
             report = root / "evaluation.json"
             subprocess.run(
-                [sys.executable, "-m", "checkbox_detection.scripts.run_detection_test", "-d", "dummy_v1",
+                [sys.executable, "-m", "checkbox_detection.scripts.run_detector_evaluation", "-d", "dummy_v1",
                  "--ground-truth", str(ground_truth), "--output", str(report)],
                 check=True, capture_output=True, text=True,
             )

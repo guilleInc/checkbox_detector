@@ -1,6 +1,6 @@
 """Public interface for checkbox detection."""
 
-from checkbox_detection.detectors.factory import available_detectors, get_detector
+from checkbox_detection.detectors.detector_factory import available_detectors, get_detector
 from checkbox_detection.models import Checkbox
 from checkbox_detection.validation import ImageTooLargeError, InvalidImageError, validate_image
 

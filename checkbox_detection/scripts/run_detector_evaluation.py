@@ -1,7 +1,7 @@
 """Evaluate a detector against the dataset ground truth.
 
 Usage:
-    uv run python -m checkbox_detection.scripts.run_detection_test -d dummy_v1
+    uv run python -m checkbox_detection.scripts.run_detector_evaluation -d dummy_v1
 
 The JSON report is saved in checkbox_detection/data/detection_results/ by default.
 The score is:
@@ -17,14 +17,14 @@ import json
 from pathlib import Path
 
 from checkbox_detection import available_detectors, get_detector
-from checkbox_detection.evaluation import IOU_THRESHOLD, DetectionTestResult, run_detection_test
-from checkbox_detection.scripts.paint_ground_truth import DEFAULT_GROUND_TRUTH_PATH, load_ground_truth
+from checkbox_detection.detector_evaluator import IOU_THRESHOLD, DetectorEvaluationResult, evaluate_detection
+from checkbox_detection.ground_truth import DEFAULT_GROUND_TRUTH_PATH, load_ground_truth
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DEFAULT_OUTPUT_DIR = BASE_DIR / "data" / "detection_results"
 
 
-def simple_score(result: DetectionTestResult) -> float:
+def simple_score(result: DetectorEvaluationResult) -> float:
     """Return a simple score from 0 to 1 for a detection result."""
     denominator = max(result.expected_boxes, result.detected_boxes)
     if denominator == 0:
@@ -68,12 +68,12 @@ def main() -> None:
     args = parse_args()
     annotations = load_ground_truth(args.ground_truth)
     detector = get_detector(args.detector)
-    aggregate = DetectionTestResult(image_name="all_images")
+    aggregate = DetectorEvaluationResult(image_name="all_images")
     image_results = []
 
     for image_path, expected in annotations:
         detected = detector.detect(image_path)
-        result = run_detection_test(
+        result = evaluate_detection(
             image_name=image_path.name,
             detected=detected,
             expected=expected,
