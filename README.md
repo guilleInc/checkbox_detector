@@ -11,6 +11,19 @@ The app is already deployed and can be tried without installing anything:
 
 <https://checkbox-detector-2c01812c.fastapicloud.dev/>
 
+## Accepted images
+
+- **Format:** PNG or JPEG (`.png`, `.jpg`, `.jpeg`). The web UI only accepts
+  these. The API validates the file content, not its name or MIME type, so
+  other formats the server can decode may also work, but only PNG and JPEG are
+  supported.
+- **File size:** up to 10 MiB.
+- **Resolution:** up to 25 megapixels (width × height, e.g. 5000 × 5000). An A4
+  page scanned at 300 DPI is about 8.7 megapixels.
+
+`POST /detect` answers `400` for an unreadable or unsupported image and `413`
+when the file size or the resolution exceeds the limits.
+
 ## Running locally with Docker
 
 The app is served at `http://localhost:8000/`. Before starting, make sure no
