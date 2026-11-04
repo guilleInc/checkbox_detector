@@ -7,4 +7,3 @@ __pycache__
 Dockerfile
 docker-compose.yml
 checkbox_detection/data/detection_results/*
-checkbox_detection/data/ground_truth_results/*

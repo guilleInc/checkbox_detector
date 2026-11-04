@@ -45,3 +45,31 @@ without the web UI. Open `/docs` on the hosted app
 3. Choose the image file to upload (optionally set `detector`; the default is
    `opencv_v2`).
 4. Click **Execute** and read the detections in the response body.
+
+## Development setup
+
+Requirements:
+
+- Python 3.14 or newer
+- [uv](https://docs.astral.sh/uv/)
+
+Install the dependencies (creates `.venv/`):
+
+```bash
+uv sync
+```
+
+Run the API with auto-reload (web UI at `http://127.0.0.1:8000/`):
+
+```bash
+uv run fastapi dev
+```
+
+Run the tests:
+
+```bash
+uv run python -m unittest discover -s . -v
+```
+
+For the detection scripts and the module layout, see
+[`checkbox_detection/README.md`](checkbox_detection/README.md).

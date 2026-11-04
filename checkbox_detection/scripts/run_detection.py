@@ -13,7 +13,7 @@ import sys
 from pathlib import Path
 
 from checkbox_detection import available_detectors, get_detector
-from checkbox_detection.painting import CheckboxPainter
+from checkbox_detection.checkboxes_painter import CheckboxPainter
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 IMAGE_DATASET_DIR = BASE_DIR / "data" / "image_dataset"

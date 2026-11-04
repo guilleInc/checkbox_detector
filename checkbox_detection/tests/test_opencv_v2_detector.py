@@ -1,11 +1,11 @@
 import unittest
 from pathlib import Path
 
-from checkbox_detection.detectors.factory import get_detector
+from checkbox_detection.detectors.detector_factory import get_detector
 from checkbox_detection.detectors.opencv_v2_detector import OpenCVV2CheckboxesDetector
-from checkbox_detection.evaluation import run_detection_test
+from checkbox_detection.detector_evaluator import evaluate_detection
 from checkbox_detection.models import Checkbox
-from checkbox_detection.scripts.paint_ground_truth import load_ground_truth
+from checkbox_detection.ground_truth import load_ground_truth
 
 
 BASE_DIR = Path(__file__).resolve().parents[1]
@@ -27,7 +27,7 @@ class OpenCVV2DetectorTest(unittest.TestCase):
         for image_path, expected in load_ground_truth(
             BASE_DIR / "data" / "ground_truth.json"
         ):
-            result = run_detection_test(
+            result = evaluate_detection(
                 image_path.name,
                 self.detector.detect(image_path),
                 expected,
